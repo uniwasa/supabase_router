@@ -33,6 +33,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
     ],
     redirect: (state) {
+      // locationを保存するプロバイダかなんかを用意すればいいかな。
+      print(state.location);
       print(ref.read(authControllerProvider).session);
 
       final bool loggedIn;
