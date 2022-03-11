@@ -37,26 +37,37 @@ class _MyAppState extends ConsumerState<MyApp> {
       print(state.location);
       print(ref.read(authControllerProvider).session);
 
-      final bool loggedIn;
-      if (ref.read(authControllerProvider).session == null) {
-        loggedIn = false;
-      } else {
-        loggedIn = true;
-      }
+      final session = ref.read(authControllerProvider).session;
 
-      final goingToLogin = state.location == '/login';
-      if (!loggedIn && !goingToLogin) {
-        print('ログインにリダイレクト');
-        return '/login';
-      }
+      return session.when(
+        data: (data) {
+          final goingToSplash = state.location == '/';
+          if (goingToSplash) return '/login';
 
-      if (loggedIn && goingToLogin) {
-        print('アカウントにリダイレクト');
-        return '/account';
-      }
+          final bool loggedIn;
+          if (data == null) {
+            loggedIn = false;
+          } else {
+            loggedIn = true;
+          }
 
-      print('リダイレクトしません');
-      return null;
+          final goingToLogin = state.location == '/login';
+          if (!loggedIn && !goingToLogin) {
+            print('ログインにリダイレクト');
+            return '/login';
+          }
+
+          if (loggedIn && goingToLogin) {
+            print('アカウントにリダイレクト');
+            return '/account';
+          }
+
+          print('リダイレクトしません');
+          return null;
+        },
+        error: (error, stack) => null,
+        loading: () => null,
+      );
     },
     refreshListenable: ref.watch(authControllerProvider),
   );

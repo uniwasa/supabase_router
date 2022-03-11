@@ -8,14 +8,27 @@ final authControllerProvider = ChangeNotifierProvider<AuthController>((ref) {
 
 class AuthController extends ChangeNotifier {
   late final GotrueSubscription _subscription;
-  Session? session;
-  AuthController() : super() {
-    Supabase.instance.client.auth.refreshSession();
+  AsyncValue<Session?> session;
+  AuthController()
+      : session = const AsyncLoading(),
+        super() {
+    init();
+  }
+
+  Future<void> init() async {
     Supabase.instance.client.auth.onAuthStateChange((event, session) {
       print('状態変更');
-      this.session = session;
+      this.session = AsyncData(session);
       notifyListeners();
     });
+
+    // await Future.delayed(const Duration(seconds: 2));
+    final session = await Supabase.instance.client.auth.refreshSession();
+    // 未ログイン時はonAuthStateChange走らないので、自分で設定
+    if (session.data == null) {
+      this.session = const AsyncData(null);
+      notifyListeners();
+    }
   }
 
   @override
