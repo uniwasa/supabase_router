@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:supabase_quickstart/auth_controller.dart';
 
 import 'package:supabase_quickstart/pages/account_page.dart';
+import 'package:supabase_quickstart/pages/example_page.dart';
 import 'package:supabase_quickstart/pages/login_page.dart';
 import 'package:supabase_quickstart/pages/splash_page.dart';
 
@@ -30,6 +31,10 @@ class _MyAppState extends ConsumerState<MyApp> {
       GoRoute(
         path: '/account',
         builder: (context, state) => const AccountPage(),
+      ),
+      GoRoute(
+        path: '/example',
+        builder: (context, state) => const ExamplePage(),
       ),
     ],
     redirect: (state) {

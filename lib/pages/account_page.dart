@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase/supabase.dart';
 import 'package:supabase_quickstart/components/auth_required_state.dart';
 import 'package:supabase_quickstart/components/avatar.dart';
@@ -118,7 +119,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
         leading: IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
-            Navigator.of(context).pushNamed('/account');
+            context.go('/example');
           },
         ),
       ),
