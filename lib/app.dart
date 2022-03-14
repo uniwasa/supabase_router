@@ -19,6 +19,7 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   late final _router = GoRouter(
+    urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
         path: '/',
