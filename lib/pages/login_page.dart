@@ -70,18 +70,20 @@ class _LoginPageState extends AuthState<LoginPage> {
             onPressed: _isLoading ? null : _signIn,
             child: Text(_isLoading ? 'Loading' : 'Send Magic Link'),
           ),
-          HookConsumer(builder: (
-            BuildContext context,
-            WidgetRef ref,
-            Widget? child,
-          ) {
-            return ElevatedButton(
-              onPressed: () {
-                print(ref.read(authControllerProvider).session);
-              },
-              child: const Text('確認'),
-            );
-          }),
+          HookConsumer(
+            builder: (
+              BuildContext context,
+              WidgetRef ref,
+              Widget? child,
+            ) {
+              return ElevatedButton(
+                onPressed: () {
+                  print(ref.read(authControllerProvider).session);
+                },
+                child: const Text('確認'),
+              );
+            },
+          ),
         ],
       ),
     );

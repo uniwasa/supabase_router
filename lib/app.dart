@@ -26,6 +26,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         builder: (context, state) => const SplashPage(),
       ),
       GoRoute(
+        name: 'login',
         path: '/login',
         builder: (context, state) => const LoginPage(),
       ),
@@ -39,16 +40,12 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
     ],
     redirect: (state) {
-      // locationを保存するプロバイダかなんかを用意すればいいかな。
-      print(state.location);
-      print(ref.read(authControllerProvider).session);
-
       final session = ref.read(authControllerProvider).session;
 
       return session.when(
         data: (data) {
           final goingToSplash = state.location == '/';
-          if (goingToSplash) return '/login';
+          if (goingToSplash) return state.namedLocation('login');
 
           final bool loggedIn;
           if (data == null) {
@@ -56,17 +53,19 @@ class _MyAppState extends ConsumerState<MyApp> {
           } else {
             loggedIn = true;
           }
+          final goingToLogin = state.subloc == state.namedLocation('login');
 
-          final goingToLogin = state.location == '/login';
-          if (!loggedIn && !goingToLogin) {
-            print('ログインにリダイレクト');
-            return '/login';
+          final fromLoc = state.subloc;
+          if (!loggedIn) {
+            return goingToLogin
+                ? null
+                : state.namedLocation(
+                    'login',
+                    queryParams: {if (fromLoc.isNotEmpty) 'from': fromLoc},
+                  );
           }
 
-          if (loggedIn && goingToLogin) {
-            print('アカウントにリダイレクト');
-            return '/account';
-          }
+          if (goingToLogin) return state.queryParams['from'] ?? '/account';
 
           print('リダイレクトしません');
           return null;
