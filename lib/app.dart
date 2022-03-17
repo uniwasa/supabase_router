@@ -22,7 +22,13 @@ class _MyAppState extends ConsumerState<MyApp> {
     urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
+        name: 'home',
         path: '/',
+        builder: (context, state) => const AccountPage(),
+      ),
+      GoRoute(
+        name: 'splash',
+        path: '/splash',
         builder: (context, state) => const SplashPage(),
       ),
       GoRoute(
@@ -31,31 +37,23 @@ class _MyAppState extends ConsumerState<MyApp> {
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: '/account',
-        builder: (context, state) => const AccountPage(),
-      ),
-      GoRoute(
         path: '/example',
         builder: (context, state) => const ExamplePage(),
       ),
     ],
     redirect: (state) {
       final session = ref.read(authControllerProvider).session;
-
       return session.when(
         data: (data) {
-          final goingToSplash = state.location == '/';
-          if (goingToSplash) return state.namedLocation('login');
+          final goingToSplash = state.location == state.namedLocation('splash');
+          if (goingToSplash) return state.namedLocation('home');
 
-          final bool loggedIn;
-          if (data == null) {
-            loggedIn = false;
-          } else {
-            loggedIn = true;
-          }
-          final goingToLogin = state.subloc == state.namedLocation('login');
+          final loggedIn = ref.read(authControllerProvider).loggedIn;
+          final loginLoc = state.namedLocation('login');
+          final goingToLogin = state.subloc == loginLoc;
 
-          final fromLoc = state.subloc;
+          final homeLoc = state.namedLocation('home');
+          final fromLoc = state.subloc == homeLoc ? '' : state.subloc;
           if (!loggedIn) {
             return goingToLogin
                 ? null
@@ -65,13 +63,17 @@ class _MyAppState extends ConsumerState<MyApp> {
                   );
           }
 
-          if (goingToLogin) return state.queryParams['from'] ?? '/account';
+          if (goingToLogin) return state.queryParams['from'] ?? homeLoc;
 
-          print('リダイレクトしません');
           return null;
         },
         error: (error, stack) => null,
-        loading: () => null,
+        loading: () {
+          final splashLoc = state.namedLocation('splash');
+          final goingToSplash = state.subloc == splashLoc;
+          if (!goingToSplash) return splashLoc;
+          return null;
+        },
       );
     },
     refreshListenable: ref.watch(authControllerProvider),
