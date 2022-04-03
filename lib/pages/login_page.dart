@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:supabase/supabase.dart';
-import 'package:supabase_quickstart/auth_controller.dart';
 import 'package:supabase_quickstart/components/auth_state.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
@@ -69,20 +67,6 @@ class _LoginPageState extends AuthState<LoginPage> {
           ElevatedButton(
             onPressed: _isLoading ? null : _signIn,
             child: Text(_isLoading ? 'Loading' : 'Send Magic Link'),
-          ),
-          HookConsumer(
-            builder: (
-              BuildContext context,
-              WidgetRef ref,
-              Widget? child,
-            ) {
-              return ElevatedButton(
-                onPressed: () {
-                  print(ref.read(authControllerProvider).session);
-                },
-                child: const Text('確認'),
-              );
-            },
           ),
         ],
       ),

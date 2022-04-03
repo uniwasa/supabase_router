@@ -117,7 +117,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       appBar: AppBar(
         title: const Text('Profile'),
         leading: IconButton(
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.info),
           onPressed: () {
             context.go('/example');
           },
